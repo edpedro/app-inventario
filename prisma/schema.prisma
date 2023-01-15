@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid())
+  name       String
+  username   String
+  password   String
+  created_at DateTime? @default(now())
+  updated_at DateTime? @default(now())
+
+  baseWms BaseWms[]
+  baseSap BaseSap[]
+  baseCiclico BaseCiclico[]
+  ficha Ficha[]
+  
+  @@map("users")
+}
+
+model BaseWms {
+  id        Int      @default(autoincrement()) @id
+  item     String
+  descricao   String
+  endereco   String
+  tipoEstoque   String
+  catItem   String
+  saldo    Float
+  date String
+  username String 
+
+  user User @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user_id String
+
+  @@map("baseWms") 
+
+}
+
+model BaseSap {
+  id        Int      @default(autoincrement()) @id
+  centro     String
+  deposito   String
+  material   String
+  textBreve   String
+  UtilLivre   Float
+  ValUtilLivre    Float
+  date String
+  username String 
+
+  user User @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user_id String
+
+  @@map("baseSap") 
+
+}
+
+model BaseCiclico {
+  id        Int      @default(autoincrement()) @id
+  deposito     String
+  centro String
+  item   String
+  descricao   String
+  saldoSap   Float
+  saldoWms   Float
+  saldoFisico   Float @default(0)
+  ValUtilLivre    Float 
+  usernameSap String
+  dateSap String
+  usernameWms String
+  dateWms String
+  usernameCiclico String
+  dateCiclico String 
+
+  user User @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user_id String
+
+  @@map("baseCiclico") 
+
+}
+
+model Ficha {
+  id        Int      @default(autoincrement()) @id
+  item     String
+  descricao   String
+  endereco   String
+  tipoEstoque   String
+  catItem   String
+  saldo    Float?
+  date String
+  username String 
+
+  user User @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user_id String
+
+  @@map("ficha") 
+
+}
